@@ -1,0 +1,28 @@
+				;	@ /0000
+0000 000a		;	MAIN JP INICIO
+0002 0012		;	B1 K /0012 ; Primeiro operando
+0004 0034		;	B2 K /0034 ; Segundo operando
+0006 0000		;	SAIDA $ /0001   0
+				;	SAIDA $ /0001
+0008 0100		;	MULT K /0100
+
+
+000a 8002		;	INICIO LD B1
+000c 9018		;	MM X
+000e 8004		;	LD B2
+0010 901a		;	MM Y
+0012 a01c		;	SC PACK ; Chama a subrotina
+0014 9006		;	MM SAIDA ; Guarda o resultado da subrotina na posição de saída
+0016 c016		;	FIM HM FIM ; Fim do programa
+
+0018 0000		;	X $ /0001   0
+				;	X $ /0001
+001a 0000		;	Y $ /0001   0
+				;	Y $ /0001
+
+001c 0000		;	PACK $ /0001   0
+				;	PACK $ /0001
+001e 8018		;	LD X
+0020 6008		;	* MULT
+0022 401a		;	+ Y
+0024 b01c		;	RS PACK
