@@ -1,25 +1,25 @@
 @ /0000
 MAIN JP INICIO
-PACKED K /1234
-SAIDA1 $ /0001
-SAIDA2 $ /0001
-DIV K /0100
+PACKED K /1234     ; Carrega numa constante o valor concatenado
+SAIDA1 $ /0001     ; Guarda a posição para a saída 1
+SAIDA2 $ /0001     ; Guarda a posição para a saída 2
+CONST_100 K /0100
 CONST_FF K /FF00
 CONST_01 K /0001
 AUX $ /0001
 
 INICIO LD PACKED
-MM X
-SC UNPACK
-FIM HM FIM
-X $ /0001
+MM X               ; Carrega o valor PACKED na memória X
+SC UNPACK          ; Chama a subrotina UNPACK
+FIM HM FIM         ; Fim do programa
+X $ /0001          ; Guarda a posição para a variavel X
 
-UNPACK $ /0001
-LD X
-/ DIV
-JN NEGATIVO
-POSITIVO MM SAIDA1
-* DIV
+UNPACK $ /0001     ; Guarda a posição de retorno
+LD X               ; Carrega X (PACKED) no acumulador
+/ CONST_100        ; Divide X por 100 (desloca para a direita)
+JN NEGATIVO        ; Se o valor é negativo, dá o tratamento devido
+POSITIVO MM SAIDA1 ;
+* CONST_100
 MM AUX
 LD X
 - AUX
@@ -32,17 +32,18 @@ NEGATIVO - CONST_FF
 JP POSITIVO
 
 ERRO_ARREDONDAMENTO $ /0001
-LD SAIDA1
-* DIV
-+ SAIDA2
+LD SAIDA1 ; Carrega a saida 1
+* CONST_100 ; Multiplica por 100 (desloca para a esquerda)
++ SAIDA2 ; Soma a SAIDA 2, o resultado deve ser igual a PACKED
 - PACKED
-JZ FINAL
-; Nao é zero, deu pau
+JZ FINAL ; Se a subtração é zero não há nada a ser feito
+; Se a subtraçao não é zero, tivemos erros de arredondamento
+; Nesse caso este é o procedimento para arrumar
 LD SAIDA1
 + CONST_01
 MM SAIDA1
 LD SAIDA2
-- DIV
+- CONST_100
 MM SAIDA2
 FINAL RS ERRO_ARREDONDAMENTO
 
