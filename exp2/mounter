@@ -1,3 +1,4 @@
 #!/bin/bash
 
-java -cp MLR.jar montador.MvnAsm $1
+java -cp MLR.jar montador.MvnAsm $1.asm
+java -jar mvn.jar
