@@ -14,6 +14,7 @@ TO_PASTE     K /0010
              K /FFFF
 ZERO_CONST   K /0000
 ONE_CONST    K /0001
+TWO_CONST    k /0002
 ERROR_CONST  K /FFFF
 LOAD        LD /0000
 STORE       MM /0000
@@ -25,6 +26,7 @@ INICIO      SC VERIFY      ; Verifica se pode haver erro de memória
 FIM         HM FIM
 
 START_COPY  SC COPY
+            JP FIM
 
 
 
@@ -37,6 +39,7 @@ START_COPY  SC COPY
 
 VERIFY       $ /0001
             LD TO_PASTE
+             - SIZE
              - SIZE
              - TO_COPY
 
@@ -63,9 +66,9 @@ COPY_BYTE   LD SIZE
             MM SIZE
 
             LD TO_COPY
-             + LOAD
+             + LOAD         ; LOAD é a constante para colocar 8 no começo da instrução
             MM LOAD_LINE
-LOAD_LINE    K /0000
+LOAD_LINE    K /0000        ; Este valor é arbitrário pois será sobescrito
             MM BYTE
             LD TO_PASTE
              + STORE
@@ -74,13 +77,13 @@ LOAD_LINE    K /0000
 STORE_LINE   K /0000
 
             LD TO_COPY
-             + ONE_CONST    ; Atualizando o ponteiro TO_COPY
+             + TWO_CONST    ; Atualizando o ponteiro TO_COPY
             MM TO_COPY
             LD TO_PASTE
-             + ONE_CONST    ; Atualizando o ponteiro TO_PASTE
+             + TWO_CONST    ; Atualizando o ponteiro TO_PASTE
             MM TO_PASTE
-            ;JP COPY_BYTE
-            
+            JP COPY_BYTE
+
 
 FINISH      RS COPY
 
