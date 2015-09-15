@@ -1,4 +1,5 @@
 #!/bin/bash
 
 java -cp MLR.jar montador.MvnAsm $1.asm
+echo $1.mvn | pbcopy
 java -jar mvn.jar
