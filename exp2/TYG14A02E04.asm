@@ -2,8 +2,8 @@
 MAIN JP COMECAR
 SAIDA $ /0001              ; Posicao de retorno, inicia com 0000
             K 'va            ; Constantes para a string 1
-            K 'ic
-            K 'om
+            K 'ac
+            K 'oa
             K /6665
             K /0000
             K /0000
@@ -84,6 +84,7 @@ LD B_1
 JZ FIM
 - A_1
 JZ PRIMEIRO_IGUAL
+JP FIM
 
 
 COMPARA_SEGUNDO LD A_2
@@ -92,6 +93,7 @@ LD B_2
 JZ FIM
 - A_2
 JZ SEGUNDO_IGUAL
+JP FIM
 
 ; ATUALIZA CONTADOR
 
