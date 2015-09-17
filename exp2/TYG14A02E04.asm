@@ -1,99 +1,70 @@
 @ /0000
 MAIN JP INICIO
 SAIDA $ /0001              ; Posicao de retorno, inicia com 0000
-STRING1_1 K 'va            ; Constantes para a string 1
-STRING1_2 K 'ic
-STRING1_3 K 'om
-STRING1_4 K /6665
-STRING1_5 K /0000
-STRING1_6 K /0000
-STRING1_7 K /0000
-STRING1_8 K /0000
+            K 'va            ; Constantes para a string 1
+            K 'ic
+            K 'om
+            K /6665
+            K /0000
+            K /0000
+            K /0000
+            K /0000
 
-STRING2_1 K 'va             ; Constantes para a string 2
-STRING2_2 K 'ic
-STRING2_3 K 'om
-STRING2_4 K /6600
-STRING2_5 K /0000
-STRING2_6 K /0000
-STRING2_7 K /0000
-STRING2_8 K /0000
+            K 'va             ; Constantes para a string 2
+            K 'ic
+            K 'om
+            K /6600
+            K /0000
+            K /0000
+            K /0000
+            K /0000
+
+PRIMEIRA    K /0004
+SEGUNDA     K /0014
 
 ; #### Variaveis auxiliares ####
+
+
 A $ /0001
 B $ /0001
+LOAD LD /0000
+STORE MM /0000
 
 ; #### Constantes uteis ####
 CONST_2 K /0002
 CONST_1 K /0001
 CONST_MAX_UM_BYTE K /00FF
+
 ;  ######################
 ;  ##      INICIO      ##
 ;  ######################
 
-INICIO LD STRING1_1
-JZ FIM                      ; Se encontrar uma word 0000, termina.
-MM A                        ; Atribui um valor da STRING1 na variavel A
-LD STRING2_1
-JZ FIM                      ; Checa o 0000 tambem para a STRING2
-MM B                        ; Atribui um valor da STRING2 na variavel B
-SC CONFERE                  ; Processa os dois valores...
+INICIO $ /0001
 
-LD STRING1_2                ; ... e repete para todos os valores das strings.
+COMECAR LD PRIMEIRA
++ LOAD
+MM LOAD_PRIMEIRA
+LOAD_PRIMEIRA $ /0001
 JZ FIM
 MM A
-LD STRING2_2
-JZ FIM
+
+LD SEGUNDA
++ LOAD
+MM LOAD_SEGUNDA
+LOAD_SEGUNDA $ /0001
 MM B
+
 SC CONFERE
 
-LD STRING1_3                ; Word 3...
-JZ FIM
-MM A
-LD STRING2_3
-JZ FIM
-MM B
-SC CONFERE
+LD PRIMEIRA
++ CONST_2
+MM PRIMEIRA
 
-LD STRING1_4                ; Word 4...
-JZ FIM
-MM A
-LD STRING2_4
-JZ FIM
-MM B
-SC CONFERE
+LD SEGUNDA
++ CONST_2
+MM SEGUNDA
 
-LD STRING1_5                ; Word 5...
-JZ FIM
-MM A
-LD STRING2_5
-JZ FIM
-MM B
-SC CONFERE
-
-LD STRING1_6                ; Word 6...
-JZ FIM
-MM A
-LD STRING2_6
-JZ FIM
-MM B
-SC CONFERE
-
-LD STRING1_7                ; Word 7...
-JZ FIM
-MM A
-LD STRING2_7
-JZ FIM
-MM B
-SC CONFERE
-
-LD STRING1_8                ; ...e word 8!
-JZ FIM
-MM A
-LD STRING2_8
-JZ FIM
-MM B
-SC CONFERE
+JP COMECAR
 
 FIM HM FIM                  ; Fim do programa
 
