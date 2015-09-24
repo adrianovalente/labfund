@@ -27,4 +27,5 @@ SEGUNDA        K /000E
 SAIDA_STRCOMP  $ /001E
 
 INICIO         JP FIM
-FIM            HM FIMs
+FIM            HM FIM
+#              INICIO
