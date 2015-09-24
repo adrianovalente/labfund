@@ -6,11 +6,9 @@ do
     java -cp MLR.jar montador.MvnAsm $ARG.asm
 done
 
-args_linker = ( "$@" )
-for ITEM in "${args_linker[@]}"
-do
-    $i = $i.mvn
-done
+args_linker=("$@")
+args_linker=("${args_linker[@]/%/.mvn}")
+
 
 java -cp MLR.jar linker.MvnLinker "${args_linker[@]}" -s linkado.mvn
 
