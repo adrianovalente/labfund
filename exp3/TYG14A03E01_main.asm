@@ -30,6 +30,8 @@ PRIMEIRA       $ /0020  ;
 SEGUNDA        K /000E
 SAIDA_STRCOMP  $ /001E
 
-INICIO         JP FIM
+INICIO         SC PACK
+               SC UNPACK
+               SC STRCOMP
 FIM            HM FIM
 #              INICIO
