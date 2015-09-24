@@ -65,7 +65,7 @@ ERRO_ARREDONDAMENTO $ /0001
                     * CONST_100                ; Multiplica por 100 (desloca para a esquerda)
                     + UNPACK_SAIDA2
                     - PACK_SAIDA
-                   JZ FINAL
+                   JZ FINAL_ERR
                    LD UNPACK_SAIDA1
 
                    + CONST_01
@@ -73,4 +73,85 @@ ERRO_ARREDONDAMENTO $ /0001
                    LD UNPACK_SAIDA2
                    - CONST_100                ; E subtrair /0100 da saída 2
                    MM UNPACK_SAIDA2
-FINAL              RS ERRO_ARREDONDAMENTO
+FINAL_ERR          RS ERRO_ARREDONDAMENTO
+
+
+;Subrotina STRCOMP
+
+; Automodificação para carregar o primeiro endereço
+STRCOMP  $ /0001
+COMECAR LD PRIMEIRA
++ LOAD
+MM LOAD_PRIMEIRA
+LOAD_PRIMEIRA $ /0001
+
+; Chamando UNPACK e guardando os resultados em variáveis auxiliares
+MM UNPACK_ENTRADA
+SC UNPACK
+LD UNPACK_SAIDA1
+MM A_1
+LD UNPACK_SAIDA2
+MM A_2
+
+; Automodificação para carregar o segundo endereço
+LD SEGUNDA
++ LOAD
+MM LOAD_SEGUNDA
+LOAD_SEGUNDA $ /0001
+
+; Chamando UNPACK again e guardando os resultados em variáveis auxiliares
+MM UNPACK_ENTRADA
+SC UNPACK
+LD UNPACK_SAIDA1
+MM B_1
+LD UNPACK_SAIDA2
+MM B_2
+
+
+; ###################################
+; ##         COMPARACOES           ##
+; ###################################
+
+LD A_1
+JZ FIM
+LD B_1
+JZ FIM
+- A_1
+JZ PRIMEIRO_IGUAL
+JP FIM ; Finaliza a execução se as strings não forem iguais
+
+
+COMPARA_SEGUNDO LD A_2
+JZ FIM
+LD B_2
+JZ FIM
+- A_2
+JZ SEGUNDO_IGUAL
+JP FIM ; Finaliza a execução se as strings não forem iguais
+
+; ###################################
+; ##    Atualizando ponteiros      ##
+; ###################################
+
+ATUALIZA_CONTADOR LD PRIMEIRA
++ CONST_02
+MM PRIMEIRA
+
+LD SEGUNDA
++ CONST_02
+MM SEGUNDA
+
+JP COMECAR
+
+;FIM HM FIM                  ; Fim do programa
+FIM RS STRCOMP
+
+PRIMEIRO_IGUAL LD SAIDA
++ CONST_01
+MM SAIDA
+JP COMPARA_SEGUNDO
+
+SEGUNDO_IGUAL LD SAIDA
++ CONST_01
+MM SAIDA
+JP ATUALIZA_CONTADOR
