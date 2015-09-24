@@ -84,6 +84,7 @@ SC PACK
 MM ITOCH_SAIDA2
 
 RS ITOCH			; E retorna a funcao
+# INICIO_ITOCH
 
 ; #### Subrotina para transformar um numero em caractere ####
 PROCESSA_NUM K /0000
@@ -98,6 +99,7 @@ NUMERO LD NUM_IN
 RS PROCESSA_NUM
 
 # INICIO_ITOCH
+
 ;  #################
 ;  ##    CHTOI    ##
 ;  #################
@@ -177,7 +179,7 @@ RS PROCESSA_CHAR
 ERRO LD C_FFFF      ; Se der erro, retorna /FFFF ...
 MM CHTOI_SAIDA
 JP FINAL_CHTOI      ; ...e aborta a funcao toda.
-#  INICIO_CHTOI
+# INICIO_CHTOI
 
 
 
@@ -245,3 +247,4 @@ LD UNPACK_SAIDA2
 - CONST_100                ; E subtrair /0100 da saída 2
 MM UNPACK_SAIDA2
 FINAL RS ERRO_ARREDONDAMENTO
+#  INICIO_ITOCH
