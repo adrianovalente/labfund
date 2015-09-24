@@ -1,135 +1,178 @@
 @ /0000
-MAIN JP INICIO
+MAIN JP COMECAR
 SAIDA $ /0001              ; Posicao de retorno, inicia com 0000
-STRING1_1 K 'va            ; Constantes para a string 1
-STRING1_2 K 'ic
-STRING1_3 K 'om
-STRING1_4 K /6665
-STRING1_5 K /0000
-STRING1_6 K /0000
-STRING1_7 K /0000
-STRING1_8 K /0000
+            K 'va            ; Constantes para a string 1
+            K 'ac
+            K 'oa
+            K /6665
+            K /0000
+            K /0000
+            K /0000
+            K /0000
 
-STRING2_1 K 'va             ; Constantes para a string 2
-STRING2_2 K 'ic
-STRING2_3 K 'om
-STRING2_4 K /6600
-STRING2_5 K /0000
-STRING2_6 K /0000
-STRING2_7 K /0000
-STRING2_8 K /0000
+            K 'va             ; Constantes para a string 2
+            K 'ic
+            K 'om
+            K /6600
+            K /0000
+            K /0000
+            K /0000
+            K /0000
+
+PRIMEIRA    K /0004
+SEGUNDA     K /0014
 
 ; #### Variaveis auxiliares ####
-A $ /0001
-B $ /0001
 
-; #### Constantes uteis ####
-CONST_2 K /0002
-CONST_1 K /0001
-CONST_MAX_UM_BYTE K /00FF
+A           $ /0001
+B           $ /0001
+A_1         $ /0001
+A_2         $ /0001
+B_1         $ /0001
+B_2         $ /0001
+SAIDA1      $ /0001
+SAIDA2      $ /0001
+PACKED      $ /0001
+CONST_100   K /0100
+CONST_FF    K /FF00
+CONST_01    K /0001
+CONST_02    k /0002
+AUX         $ /0001
+X           $ /0001
+
+LOAD       LD /0000
+STORE      MM /0000
+
 ;  ######################
 ;  ##      INICIO      ##
 ;  ######################
 
-INICIO LD STRING1_1
-JZ FIM                      ; Se encontrar uma word 0000, termina.
-MM A                        ; Atribui um valor da STRING1 na variavel A
-LD STRING2_1
-JZ FIM                      ; Checa o 0000 tambem para a STRING2
-MM B                        ; Atribui um valor da STRING2 na variavel B
-SC CONFERE                  ; Processa os dois valores...
+; Automodificação para carregar o primeiro endereço
+COMECAR LD PRIMEIRA
++ LOAD
+MM LOAD_PRIMEIRA
+LOAD_PRIMEIRA $ /0001
 
-LD STRING1_2                ; ... e repete para todos os valores das strings.
-JZ FIM
-MM A
-LD STRING2_2
-JZ FIM
-MM B
-SC CONFERE
+; Chamando UNPACK e guardando os resultados em variáveis auxiliares
+MM PACKED
+SC UNPACK
+LD SAIDA1
+MM A_1
+LD SAIDA2
+MM A_2
 
-LD STRING1_3                ; Word 3...
-JZ FIM
-MM A
-LD STRING2_3
-JZ FIM
-MM B
-SC CONFERE
+; Automodificação para carregar o segundo endereço
+LD SEGUNDA
++ LOAD
+MM LOAD_SEGUNDA
+LOAD_SEGUNDA $ /0001
 
-LD STRING1_4                ; Word 4...
-JZ FIM
-MM A
-LD STRING2_4
-JZ FIM
-MM B
-SC CONFERE
+; Chamando UNPACK again e guardando os resultados em variáveis auxiliares
+MM PACKED
+SC UNPACK
+LD SAIDA1
+MM B_1
+LD SAIDA2
+MM B_2
 
-LD STRING1_5                ; Word 5...
-JZ FIM
-MM A
-LD STRING2_5
-JZ FIM
-MM B
-SC CONFERE
 
-LD STRING1_6                ; Word 6...
-JZ FIM
-MM A
-LD STRING2_6
-JZ FIM
-MM B
-SC CONFERE
+; ###################################
+; ##         COMPARACOES           ##
+; ###################################
 
-LD STRING1_7                ; Word 7...
+LD A_1
 JZ FIM
-MM A
-LD STRING2_7
+LD B_1
 JZ FIM
-MM B
-SC CONFERE
+- A_1
+JZ PRIMEIRO_IGUAL
+JP FIM ; Finaliza a execução se as strings não forem iguais
 
-LD STRING1_8                ; ...e word 8!
+
+COMPARA_SEGUNDO LD A_2
 JZ FIM
-MM A
-LD STRING2_8
+LD B_2
 JZ FIM
-MM B
-SC CONFERE
+- A_2
+JZ SEGUNDO_IGUAL
+JP FIM ; Finaliza a execução se as strings não forem iguais
+
+; ###################################
+; ##    Atualizando ponteiros      ##
+; ###################################
+
+ATUALIZA_CONTADOR LD PRIMEIRA
++ CONST_02
+MM PRIMEIRA
+
+LD SEGUNDA
++ CONST_02
+MM SEGUNDA
+
+JP COMECAR
 
 FIM HM FIM                  ; Fim do programa
 
-
-
-;  ######################
-;  ##    SUBROTINAS    ##
-;  ######################
-
-; #### Conferir se A e B sao iguais, atualizar o contador ####
-CONFERE $ /0001
-LD A                        ; Calcula a diferenca das words
-- B
-JZ IGUAIS                   ; Se der 0, fica facil
-JN B_MAIOR                  ; O numero no acumulador tem que ser positivo agora.
-                            ; Se a diferenca for maior que 00FF, o primeiro byte
-                            ; e diferente. Caso contrario, a diferenca tem que
-                            ; estar no segundo byte. Segue o algoritmo.
-GAMBIARRA - CONST_MAX_UM_BYTE
-JN PRIMEIRO_BYTE_IGUAL
-JP FIM                      ; Se o primeiro byte nao for igual, so finaliza.
-
-IGUAIS LD SAIDA             ; So somar 2 na saida
-+ CONST_2
+PRIMEIRO_IGUAL LD SAIDA
++ CONST_01
 MM SAIDA
-JP RETORNA
+JP COMPARA_SEGUNDO
 
-B_MAIOR LD B                ; Se o B for maior, inverte a subtracao
-- A
-JP GAMBIARRA
-
-PRIMEIRO_BYTE_IGUAL LD SAIDA
-+ CONST_1                   ; Soma 1 na saida e finaliza o programa
+SEGUNDO_IGUAL LD SAIDA
++ CONST_01
 MM SAIDA
-JP FIM
+JP ATUALIZA_CONTADOR
 
-RETORNA RS CONFERE
+; ###################################
+; ##            UNPACK             ##
+; ###################################
+
+UNPACK $ /0001            ; Guarda a posição de retorno
+LD PACKED                      ; Carrega X (PACKED) no acumulador
+/ CONST_100               ; Divide X por 100 (desloca para a direita)
+JN NEGATIVO               ; Se o valor é negativo, dá o tratamento devido
+POSITIVO MM SAIDA1
+* CONST_100
+MM AUX
+LD X
+- AUX
+MM SAIDA2
+SC ERRO_ARREDONDAMENTO
+
+RS UNPACK
+
+NEGATIVO - CONST_FF
+JP POSITIVO
+
+
+;  #################################################
+;  ##    Tratamento de erros de arredondamento    ##
+;  #################################################
+
+ERRO_ARREDONDAMENTO $ /0001
+LD SAIDA1                  ; Carrega a saida 1
+* CONST_100                ; Multiplica por 100 (desloca para a esquerda)
++ SAIDA2                   ; Soma a SAIDA 2
+
+; Agora o valor no acumulador deve ser igual a PACKED.
+; Vamos verificar isto subtraindo PACKED do valor salvo no acumulador
+
+- PACKED
+
+; Se a subtração é zero não há nada a ser feito
+
+JZ FINAL
+
+; Se a subtraçao não é zero, tivemos erros de arredondamento
+; Nesse caso este é o procedimento para arrumar
+
+LD SAIDA1
+
++ CONST_01                 ; Devemos somar /0001 na saída 1
+MM SAIDA1
+LD SAIDA2
+- CONST_100                ; E subtrair /0100 da saída 2
+MM SAIDA2
+FINAL RS ERRO_ARREDONDAMENTO
 
 # MAIN
