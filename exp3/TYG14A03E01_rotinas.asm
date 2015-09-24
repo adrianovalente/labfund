@@ -24,6 +24,9 @@ SEGUNDA         <
 SAIDA_STRCOMP   <
 
 ; Variáveis auxiliares
+
+& /0000
+
 AUX             $ /0001
 A               $ /0001
 B               $ /0001
