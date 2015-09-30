@@ -4,21 +4,22 @@
  */
 public class Poligono {
     float[] lados;
-    
+
     public Poligono(float[] lados){
         this.lados = lados;
     }
-    
-    
+
+
     public boolean validar(){
         /* Não sei que forma é, então o melhor
          * que eu posso fazer é verificar se possui
          * pelo menos 3 lados.
          */
-		 
+
         // TODO: verificar se forma tem 3 lados
+        return lados.length > 2;
     }
-    
+
     public float perimetro(){
         float soma = 0;
         for ( float i : lados ){
