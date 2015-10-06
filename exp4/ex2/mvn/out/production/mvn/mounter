@@ -1,0 +1,3 @@
+#!/bin/bash
+set -e # Isso serve pra ele não continuar executando se encontrar algum erro.
+javac MvnPcs.java Dispositivo.java MvnControle.java UnidadeControle.java Bits8.java Memoria.java Registradores.java GerenciadorDispositivos.java Word.java controle/MVNException.java controle/PainelControle.java controle/Terminal.java controle/TerminalPadrao.java dispositivo/Counter.java dispositivo/Monitor.java dispositivo/Rand.java dispositivo/Disco.java dispositivo/Max.java dispositivo/Pow.java dispositivo/Teclado.java dispositivo/Fibonacci.java
