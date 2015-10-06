@@ -324,7 +324,13 @@ public class Disco implements Dispositivo{
 	
 	@Override
 	public Bits8 size() throws MVNException{
-		return null;
+
+		long size = arquivo.length();
+		if ((size < Integer.MIN_VALUE) || (size > Integer.MAX_VALUE)) {
+			throw new MVNException("Arquivo muito grande");
+		}
+		return new Bits8((int) size);
+
 	}
 	
 	
