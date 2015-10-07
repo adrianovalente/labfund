@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e # Isso serve pra ele não continuar executando se encontrar algum erro.
+for ARG in "$@"
+do
+    java -cp MLR.jar montador.MvnAsm $ARG.asm
+done
+
+args_linker=("$@")
+args_linker=("${args_linker[@]/%/.mvn}")
+
+
+java -cp MLR.jar linker.MvnLinker "${args_linker[@]}" -s linkado.mvn
+
+java -cp MLR.jar relocator.MvnRelocator linkado.mvn saida.mvn 0000 000
+
+java -jar mvn.jar
