@@ -5,7 +5,8 @@ GL_BUF <
 POS_BUFFER <
 GET_DATA <
 TEMP_DATA <
-EOL_CHAR <
+EOL_UNIX <
+EOL_WINDOWS <
 CONST_02 <
 CONST_01 <
 CONST_00 <
@@ -57,8 +58,11 @@ JP GETLINE_INICIO
 ; Rotina secundária para verificar a presença de caracter de final de linha ou aquivo
 VERIFICA_FINAL $ /0001
 LD TEMP_DATA
-- EOL_CHAR
-RS VERIFICA_FINAL
+- EOL_UNIX
+JZ FINAL_VERIFICACAO
+LD TEMP_DATA
+- EOL_WINDOWS
+FINAL_VERIFICACAO RS VERIFICA_FINAL
 
 ; Rotina secundária para verificar se o buffer já está cheio
 VERIFICA_BUFFER $ /0001
