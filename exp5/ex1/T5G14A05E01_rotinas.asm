@@ -5,14 +5,19 @@ GL_BUF <
 POS_BUFFER <
 GET_DATA <
 TEMP_DATA <
-EOF_CHAR <
+EOL_CHAR <
 CONST_02 <
-
+CONST_01 <
+CONST_00 <
+HUE <
+WRITE <
 
 & /0000
 
-GETLINEEF $ /0001
-JP GETLINE_INICIO
+GETLINEF $ /0001
+
+
+; JP GETLINE_INICIO
 
 ; Guardando constante de posição do buffer
 LD GL_END
@@ -22,18 +27,26 @@ MM POS_BUFFER
 GETLINE_INICIO LD GET_DATA
 + GL_UL
 MM GET
-GET $/0001
+GET $ /0001
 
 ; Guardando valor lido numa posição temporária da memória
 MM TEMP_DATA
 
+SC VERIFICA_FINAL
+JZ ACABOU
+
+; Automodificação para escrever valor na memória
+LD WRITE
++ POS_BUFFER
+MM ESCREVER
+LD TEMP_DATA
+ESCREVER $ /0001
+
 ; Atalizando ponteiro da posição do buffer
+LD HUE
 LD POS_BUFFER
 + CONST_02
 MM POS_BUFFER
-
-SC VERIFICA_FINAL
-JZ ACABOU
 
 SC VERIFICA_BUFFER
 JZ BUFFER_CHEIO
@@ -49,8 +62,8 @@ RS VERIFICA_FINAL
 
 ; Rotina secundária para verificar se o buffer já está cheio
 VERIFICA_BUFFER $ /0001
-LD GL_UL
-+ GL_BUF
+LD GL_END   ; Carrega início do buffer
++ GL_BUF   ; Soma tamanho do buffer
 - POS_BUFFER
 RS VERIFICA_BUFFER
 
@@ -62,6 +75,6 @@ JP TERMINAR
 ACABOU LD CONST_00
 JP TERMINAR
 
-TERMINAR RS GETLINEEF
+TERMINAR RS GETLINEF
 
-# GETLINEEF
+# GETLINEF
