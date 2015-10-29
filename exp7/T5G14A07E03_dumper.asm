@@ -57,7 +57,10 @@ GRAVAR    SC TAMANHO_BLOCO ; Verificando tamanho do próximo buffer
           SC GRAVA_BLOCO
           JP GRAVAR
 
-FIM_GRAVACAO JP FIM
+FIM_GRAVACAO LD ESCREVER
+             MM WRITE_EXEC
+             LD DUMP_EXE
+WRITE_EXEC    $ /0001
 FIM HM FIM
 
 ; =============================== ;
