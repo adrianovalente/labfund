@@ -1,0 +1,143 @@
+LOADER		>
+LOADER_UL 	>
+
+& /0000
+
+; Constantes e variaveis
+LOADER_UL $ /0001
+
+END_INICIAL $ /0001
+TAMANHO $ /0001
+GET_DATA GD /300
+GET $ /0001
+WORD $ /0001
+WRITE MM /0000
+CHECKSUM $ /0001
+
+CONST_0FFF  K /0FFF
+CONST_ERRO  K /FFFE
+CONST_CERRO K /FFFC
+CONST_ZERO  K /0000
+CONST_DOIS  K /0002
+CONST_UM    K /0001
+
+
+END_ESCREVER $ /0001
+TAM_BLOCO $ /0001
+
+
+; ########################################### ;
+; ##           SUBROTINA LOADER            ## ;
+; ########################################### ;
+
+LOADER $ /0001
+LD GET_DATA
++ LOADER_UL
+MM GET
+
+; Carregando endereço inicial
+LD GET
+MM GET_ENDERECO
+GET_ENDERECO $ /0001
+MM END_INICIAL
+
+; Carregando tamanho
+LD GET
+MM GET_TAMANHO
+GET_TAMANHO $ /0001
+MM TAMANHO
+
+; Verificando se cabe tudo na memória
+LD TAMANHO
++ TAMANHO
++ END_INICIAL
+- CONST_0FFF
+JN MEMORIA_OK
+JP FINALIZAR_ERRO
+
+; MEMORIA_OK
+MEMORIA_OK JP COPIAR_BLOCO
+COPIAR_BLOCO SC LER_BLOCO
+LD TAMANHO
+JZ FIM_LOADER
+JP COPIAR_BLOCO
+FIM_LOADER LD GET
+MM GET_EXEC
+GET_EXEC $ /0001
+RS LOADER
+
+; ########################################### ;
+; ##          SUBROTINA LER_BLOCO          ## ;
+; ########################################### ;
+
+; Lendo endereço inicial do bloco
+LER_BLOCO $ /0001
+
+; Inicializando o CHECKSUM
+LD CONST_ZERO
+MM CHECKSUM
+
+LD GET
+MM GET_END_INICIAL
+GET_END_INICIAL $ /0001
+MM END_ESCREVER
++ CHECKSUM
+MM CHECKSUM
+
+; Lendo tamanho do bloco
+LD GET
+MM GET_TAM_BLOCO
+GET_TAM_BLOCO $ /0001
+MM TAM_BLOCO
++ CHECKSUM
+MM CHECKSUM
+
+; Lendo words do bloco
+ESCREVER_WORD LD GET
+MM GET_WORD
+GET_WORD $ /0001
+MM WORD
++ CHECKSUM
+MM CHECKSUM
+
+; Automodificação para escrever word no local desejado
+LD WRITE
++ END_ESCREVER
+MM MM_WORD
+LD WORD
+MM_WORD $ /0001
+
+; Atualizando contadores e ponteiros
+LD END_ESCREVER
++ CONST_DOIS
+MM END_ESCREVER
+
+LD TAMANHO
+- CONST_UM
+MM TAMANHO
+
+LD TAM_BLOCO
+- CONST_UM
+MM TAM_BLOCO
+
+JZ FINAL_BLOCO
+JP ESCREVER_WORD
+
+; Checksum
+FINAL_BLOCO LD GET
+MM GET_CHECKSUM
+GET_CHECKSUM $ /0001
+- CHECKSUM
+JZ CHECKSUM_OK
+
+; Em caso de erro no checksum
+LD CONST_CERRO
+RS LOADER
+
+CHECKSUM_OK RS LER_BLOCO
+
+
+FINALIZAR_ERRO LD CONST_ERRO
+RS LOADER
+
+# LOADER
